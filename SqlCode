@@ -1,0 +1,92 @@
+use DB01TEST01
+
+create table tblemployee1349205
+(
+	empid int primary key identity(1000,1) ,
+	username varchar(30),
+	pass varchar(30),
+	supid int foreign key references tblemployee1349205(empid)
+);
+
+create table tblleaves1349205
+(
+	leaveid int identity(1,1) primary key ,
+	ldate datetime ,
+	ltype varchar(30) check (ltype in ('Sick','Casual')) not null,
+	eid int foreign key references tblemployee1349205(empid),
+	lreason varchar(40) ,
+	lstatus varchar(40) check(lstatus in ('Pending','Approved','Rejected')) not null default 'Pending',
+	remarks varchar(50) default ''	
+
+);
+
+select * from tblemployee1349205
+select * from tblleaves1349205
+drop table tblemployee1349205
+drop table tblleaves1349205
+
+delete from tblemployee1349205 where empid= 1005 ;
+
+create proc sp_add1349205
+@e int out, @un varchar(30), @p varchar(30), @s int
+as
+begin
+insert into tblemployee1349205 values (@un,@p,@s)
+set @e= @@identity
+end
+
+declare @r int
+exec sp_add1349205 @r output,'Nishant','abcdef',null
+
+insert into tblleaves1349205 (ldate,ltype,eid,lreason) values ('2018-03-22','Casual',1006,'private');
+
+create proc sp_home1349205
+@sid int
+as
+begin
+select username,empid,count(empid) as noofleaves from 
+tblemployee1349205 join tblleaves1349205  on empid= eid where supid=@sid group by empid, username
+end
+
+select username,empid,count(empid) as noofleaves from 
+tblemployee1349205 join tblleaves1349205  on empid= eid where supid=1000 group by empid, username
+
+create proc sp_getboth1349205_1
+@id int
+as
+begin
+select empid,pass,username from tblemployee1349205 where empid=@id
+end
+
+select username,empid,count(empid) as noofleaves from
+ tblemployee1349205 join tblleaves1349205  on empid= eid where supid=1000 group by empid, username
+
+create proc sp_spl_1
+@id int
+as
+begin 
+select leaveid,eid,username,ltype,lreason,ldate,lstatus,remarks 
+from tblleaves1349205  join tblemployee1349205  on eid= empid where eid=@id
+end
+
+select leaveid,eid,username,ltype,lreason,ldate,lstatus,remarks 
+from tblleaves1349205  join tblemployee1349205  on eid= empid where empid=1000
+
+create proc sp_approve_3
+@id int
+as
+begin
+update tblleaves1349205
+set lstatus='Approved',Remarks='' where leaveid=@id
+
+end
+
+create proc sp_reject_3
+@id int, @r varchar(50)
+as
+begin
+update tblleaves1349205
+set lstatus='Rejected', remarks =@r where leaveid=@id
+end
+
+
