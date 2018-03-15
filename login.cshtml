@@ -1,0 +1,29 @@
+@model assessment_try1.Models.ClassLeave
+@{
+    ViewBag.Title = "login";
+}
+
+<h2>Login</h2>
+
+@using (Html.BeginForm())
+{
+    <table>
+        <tr>
+            <td>@Html.LabelFor(m=>m.empid)</td>
+            <td>@Html.EditorFor(m => m.empid)</td>
+            <td>@Html.ValidationMessageFor(m => m.empid)</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(m => m.pass)</td>
+            <td>@Html.PasswordFor(m => m.pass)</td>
+            <td>@Html.ValidationMessageFor(m => m.pass)</td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Login" /></td>
+      
+        </tr>
+
+    </table>
+
+}
+
