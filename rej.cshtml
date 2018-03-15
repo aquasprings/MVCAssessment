@@ -1,0 +1,22 @@
+
+@{
+    ViewBag.Title = "rem";
+    Layout = "~/Views/Shared/_LayoutView.cshtml";
+}
+
+<h2>Enter the Remarks</h2>
+@using (Html.BeginForm())
+{
+<table>
+    <tr>
+        <td>Enter Here-</td>
+        <td><input type="text" name="remark"/></td>
+
+    </tr>
+    <tr>
+    <td><input type="submit" value="Submit" /></td>
+    </tr>
+</table>
+
+}
+
