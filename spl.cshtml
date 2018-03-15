@@ -1,0 +1,26 @@
+@model IEnumerable<assessment_try1.Models.sp_spl_1_Result>
+@{
+    ViewBag.Title = "spl";
+    Layout = "~/Views/Shared/_LayoutView.cshtml";
+    WebGrid g1 = new WebGrid(Model);
+}
+<h1 style="color:cornflowerblue">Welcome @ViewBag.u</h1>
+<h3 style="color:brown">Pending Leaves</h3>
+@g1.GetHtml(
+    tableStyle: "table table-bordered ",
+        columns: new[]
+
+    {
+        g1.Column("leaveid","Leave Id"),
+        g1.Column("eid", "Employee ID"),
+        g1.Column("username","Employee Name"),
+          g1.Column("ltype","Leave Type"),
+        g1.Column("lreason", "Leave Reason"),
+        g1.Column("ldate","Leave Date"),
+        g1.Column("lstatus","Leave Status"),
+          g1.Column("remarks","Remarks"),
+        g1.Column(format: @<text>@Html.ActionLink("Approve |","app",new { @item.leaveid}), @Html.ActionLink("Reject","rem",new { @item.leaveid})</text>)
+       
+    }
+
+    )
