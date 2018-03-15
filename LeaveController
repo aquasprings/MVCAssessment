@@ -1,0 +1,114 @@
+using assessment_try1.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Security;
+
+namespace assessment_try1.Controllers
+{
+    public class LeaveController : Controller
+    {
+        // GET: Leave
+        public ActionResult login()
+        {
+            return View("login");
+        }
+
+        [HttpPost]
+        public ActionResult login(tblemployee1349205 t)
+        {
+            if(ModelState.IsValid)
+            {
+                DB01TEST01Entities d = new DB01TEST01Entities();
+                var v= d.sp_getboth1349205_1(t.empid).ToList();
+                
+                foreach (var i in v)
+                {
+                    if ((t.empid == i.empid) && (t.pass == i.pass))
+                    {
+                        Session["eid"] = i.empid;
+                        Session["pass"] = i.pass;
+                        Session["name"] = i.username;
+                        break;
+                        
+                    }
+                    else
+                    {
+                        Response.Write("<script>alert('Invalid Login Credentials')</script>");
+                        return View("login");
+                    }
+                    
+                }
+           
+                return RedirectToAction("viewleave");
+            }
+            else
+            {
+                Response.Write("<script>alert('Invalid Login Credentials')</script>");
+                return View("login");
+            }
+
+
+        }
+
+        public ActionResult viewleave()
+        {
+            DB01TEST01Entities d = new DB01TEST01Entities();
+            int eid = Convert.ToInt32(Session["eid"]);
+            var data= d.sp_home1349205(eid).ToList();
+            ViewBag.u = Session["name"];
+
+            return View("viewleave",data);
+        }
+        public ActionResult spl(int empid)
+        {
+            DB01TEST01Entities d = new DB01TEST01Entities();
+            ViewBag.u = Session["name"];
+            Session["e"] = empid;
+           
+            var v=d.sp_spl_1(empid).ToList();
+           
+            return View("spl",v);
+        }
+        
+        public ActionResult app(int leaveid)
+        {
+            DB01TEST01Entities d = new DB01TEST01Entities();
+            d.sp_approve_3(leaveid);
+            int e = Convert.ToInt32(Session["e"]);
+            var v = d.sp_spl_1(e).ToList();
+
+            return View("spl", v);
+
+        }
+        public ActionResult rem(int leaveid)
+        {
+            Session["lid"] = leaveid;
+            return View("rem");
+
+        }
+      
+        [HttpPost]
+        public ActionResult rem(FormCollection f)
+        {
+            string r = f["remark"];
+            int id=Convert.ToInt32(Session["lid"]);
+            DB01TEST01Entities d = new DB01TEST01Entities();
+            d.sp_reject_3(id,r);
+            int e = Convert.ToInt32(Session["e"]);
+            var v = d.sp_spl_1(e).ToList();
+
+            return View("spl", v);
+
+        }
+        public ActionResult logout()
+        {
+
+            Session.Abandon();
+            return RedirectToAction("login");
+
+        }
+    }
+}
