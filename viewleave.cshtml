@@ -1,0 +1,23 @@
+@model IEnumerable<assessment_try1.Models.sp_home1349205_Result>
+@{
+    ViewBag.Title = "viewleave";
+    Layout = "~/Views/Shared/_LayoutView.cshtml";
+    
+    WebGrid grid = new WebGrid(Model);
+}
+<h1 style="color:cornflowerblue">Welcome @ViewBag.u</h1>
+<h3 style="color:brown">Leaves by your Sub-ordinate</h3>
+@grid.GetHtml(
+    tableStyle: "table table-bordered ",
+        columns: new[]
+
+    {
+        grid.Column("username","Employee Name"),
+        grid.Column("empid", "Employee ID"),
+        grid.Column("noofleaves","No of Leaves Applied"),
+        grid.Column(format: @<text>@Html.ActionLink("Show Pending Leaves","spl",new { @item.empid})</text>)
+    }
+
+    )
+
+
